@@ -1,9 +1,9 @@
-package ru.netology.web.page;
+package ru.netology.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.val;
-import ru.netology.web.data.DataHelper;
+import ru.netology.data.DataHelper;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -17,7 +17,7 @@ public class DashboardPage {
     private final String balanceFinish = " р.";
     private SelenideElement increase = $("[data-test-id=action-deposit]");
 
-    public DashboardPage() {
+    public void verifyIsDashboardPage() {
         heading.shouldBe(visible);
     }
 
