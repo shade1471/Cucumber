@@ -28,12 +28,12 @@ public class TemplateSteps {
     }
 
     @Когда("пользователь пытается авторизоваться с именем vasya и паролем qwerty123")
-    public void loginWithNameAndPassword(DataHelper.AuthInfo authInfo) {
+    public void loginWithNameAndPassword() {
         verificationPage = loginPage.validLogin(authInfo);
     }
 
     @И("пользователь вводит проверочный код 'из смс' 12345")
-    public void setValidCode(DataHelper.VerificationCode verificationCode) {
+    public void setValidCode() {
         dashboardPage = verificationPage.validVerify(verificationCode);
     }
 
@@ -42,8 +42,5 @@ public class TemplateSteps {
         dashboardPage.verifyIsDashboardPage();
     }
 
-//    @Тогда("появляется ошибка о неверном коде проверки")
-//    public void verifyCodeIsInvalid() {
-//        verificationPage.verifyCodeIsInvalid();
-//    }
+
 }
