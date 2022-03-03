@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import ru.netology.data.DataHelper;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
@@ -23,6 +24,9 @@ public class LoginPage {
         loginField.setValue(info.getLogin());
         passwordField.setValue(info.getPassword());
         loginButton.click();
+    }
+
+    public void verifyErrorLogin() {
         errorNotification.shouldHave(text("Ошибка! Неверно указан логин или пароль"));
     }
 }

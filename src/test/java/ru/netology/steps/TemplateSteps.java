@@ -36,14 +36,41 @@ public class TemplateSteps {
         verificationPage = loginPage.validLogin(authInfo);
     }
 
+    @Когда("пользователь пытается авторизоваться с несуществующим логином и паролем")
+    public void loginInvalidUser() {
+        loginPage.invalidLogin(authInfoInvalid);
+    }
+
+    @Тогда("получает сообщение об ошибке авторизации")
+    public void verifyError() {
+        loginPage.verifyErrorLogin();
+    }
+
     @И("пользователь вводит проверочный код 'из смс' 12345")
     public void setValidCode() {
         dashboardPage = verificationPage.validVerify(verificationCode);
     }
 
+    @И("пользователь вводит неправильно проверочный код 'из смс' {string}")
+    public void setInvalidCode(String code) {
+        verificationPage.invalidVerify(code);
+    }
+
+    @Тогда("получает сообщение об ошибке в наборе кода")
+    public void verifyCodeError() {
+        verificationPage.verifyErrorCode();
+    }
+
     @Тогда("происходит успешная авторизация и пользователь попадает на страницу 'Личный кабинет'")
     public void verifyDashboardPage() {
         dashboardPage.verifyIsDashboardPage();
+    }
+
+    @Пусть("пользователь залогинен с именем vasya и паролем qwerty123")
+    public void authValidUser() {
+        openAuthPage("http://localhost:9999");
+        loginWithNameAndPassword();
+        setValidCode();
     }
 
     @И("пользователь переводит {string} рублей с карты с номером {string} на свою 1 карту с главной страницы")
