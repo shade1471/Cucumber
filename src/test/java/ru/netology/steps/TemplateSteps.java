@@ -31,9 +31,9 @@ public class TemplateSteps {
         loginPage = Selenide.open(url, LoginPage.class);
     }
 
-    @Когда("пользователь пытается авторизоваться с именем vasya и паролем qwerty123")
-    public void loginWithNameAndPassword() {
-        verificationPage = loginPage.validLogin(authInfo);
+    @Когда("пользователь пытается авторизоваться с именем {string} и паролем {string}")
+    public void loginWithNameAndPassword(String login, String password) {
+        verificationPage = loginPage.validLogin(new DataHelper.AuthInfo(login, password));
     }
 
     @Когда("пользователь пытается авторизоваться с несуществующим логином и паролем")
@@ -46,14 +46,9 @@ public class TemplateSteps {
         loginPage.verifyErrorLogin();
     }
 
-    @И("пользователь вводит проверочный код 'из смс' 12345")
-    public void setValidCode() {
-        dashboardPage = verificationPage.validVerify(verificationCode);
-    }
-
-    @И("пользователь вводит неправильно проверочный код 'из смс' {string}")
-    public void setInvalidCode(String code) {
-        verificationPage.invalidVerify(code);
+    @И("пользователь вводит проверочный код 'из смс' {string}")
+    public void setValidCode(String code) {
+        dashboardPage = verificationPage.validVerify(new DataHelper.VerificationCode(code));
     }
 
     @Тогда("получает сообщение об ошибке в наборе кода")
@@ -66,11 +61,11 @@ public class TemplateSteps {
         dashboardPage.verifyIsDashboardPage();
     }
 
-    @Пусть("пользователь залогинен с именем vasya и паролем qwerty123")
-    public void authValidUser() {
+    @Пусть("пользователь залогинен с именем {string} и паролем {string}")
+    public void authValidUser(String login, String password) {
         openAuthPage("http://localhost:9999");
-        loginWithNameAndPassword();
-        setValidCode();
+        loginWithNameAndPassword(login, password);
+        setValidCode(verificationCode.getCode());
     }
 
     @И("пользователь переводит {string} рублей с карты с номером {string} на свою 1 карту с главной страницы")
