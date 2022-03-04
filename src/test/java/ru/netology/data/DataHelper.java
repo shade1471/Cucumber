@@ -44,14 +44,20 @@ public class DataHelper {
 
     @Value
     public static class Card {
-        private String numberOne;
-        private String numberTwo;
-        private String wrongCard;
+        private String cardId;
+        private String cardNumber;
     }
 
-    public static Card getNumberCard(AuthInfo authInfo) {
-        return new Card("5559 0000 0000 0001", "5559 0000 0000 0002", "5559 0000 0000 1111");
+    private static Card[] cards =
+            {new Card("92df3f1c-a033-48e6-8390-206f6b1f56c0", "5559 0000 0000 0001"),
+                    new Card("0f3f5c2a-249e-4c3d-8287-09f7a039391d", "5559 0000 0000 0002")};
+
+    public static Card getCard(int number) {
+        return cards[number - 1];
     }
 
+    public static Card getWrongCard() {
+        return new Card("", "5559 0000 0000 1111");
+    }
 }
 

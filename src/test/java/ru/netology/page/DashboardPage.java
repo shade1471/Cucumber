@@ -3,11 +3,12 @@ package ru.netology.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.val;
-import ru.netology.data.DataHelper;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.attribute;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static ru.netology.data.DataHelper.getCard;
 
 public class DashboardPage {
     private SelenideElement heading = $("[data-test-id=dashboard]");
@@ -21,8 +22,8 @@ public class DashboardPage {
         heading.shouldBe(visible);
     }
 
-    public int getCardBalance(String id) {
-        val text = cards.findBy(attribute("data-test-id", id)).text();   //findBy(attribute(id))
+    public int getCardBalance(int number) {
+        val text = cards.findBy(attribute("data-test-id", getCard(number).getCardId())).text();
         return extractBalance(text);
     }
 
@@ -33,21 +34,9 @@ public class DashboardPage {
         return Integer.parseInt(value);
     }
 
-    public RefillPage increaseBalance(String id) {
-        cards.findBy(attribute("data-test-id", id)).find("[data-test-id=action-deposit]").click();
+    public RefillPage increaseBalance(int number) {
+        cards.findBy(attribute("data-test-id", getCard(number).getCardId()))
+                .find("[data-test-id=action-deposit]").click();
         return new RefillPage();
-    }
-
-    public void refresh(String CardOneId, String CardTwoId, DataHelper.AuthInfo authInfo) {
-        int diff = getCardBalance(CardOneId) - 10000;
-        if (diff != 0) {
-            if (diff < 0) {
-                String numberCardTwo = DataHelper.getNumberCard(authInfo).getNumberTwo();
-                increaseBalance(CardOneId).refillCard(Integer.toString(Math.abs(diff)), numberCardTwo);
-            } else {
-                String numberCardOne = DataHelper.getNumberCard(authInfo).getNumberOne();
-                increaseBalance(CardTwoId).refillCard(Integer.toString(Math.abs(diff)), numberCardOne);
-            }
-        }
     }
 }

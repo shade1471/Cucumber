@@ -23,8 +23,20 @@ public class TemplateSteps {
     private DataHelper.AuthInfo authInfo = DataHelper.getAuthInfo();
     private DataHelper.AuthInfo authInfoInvalid = DataHelper.getInvalidAuthInfo(authInfo);
     private DataHelper.VerificationCode verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-    private String cardOneId = "92df3f1c-a033-48e6-8390-206f6b1f56c0";
-    private String cardTwoId = "0f3f5c2a-249e-4c3d-8287-09f7a039391d";
+
+    public void refresh() {
+        DashboardPage dashBoard = new DashboardPage();
+        int diff = dashBoard.getCardBalance(1) - 10000;
+        if (diff != 0) {
+            if (diff < 0) {
+                String numberCardTwo = DataHelper.getCard(2).getCardNumber();
+                dashBoard.increaseBalance(1).refillCard(Integer.toString(Math.abs(diff)), numberCardTwo);
+            } else {
+                String numberCardOne = DataHelper.getCard(1).getCardNumber();
+                dashBoard.increaseBalance(2).refillCard(Integer.toString(Math.abs(diff)), numberCardOne);
+            }
+        }
+    }
 
     @Пусть("открыта страница с формой авторизации {string}")
     public void openAuthPage(String url) {
@@ -47,7 +59,7 @@ public class TemplateSteps {
     }
 
     @И("пользователь вводит проверочный код 'из смс' {string}")
-    public void setValidCode(String code) {
+    public void setCode(String code) {
         dashboardPage = verificationPage.validVerify(new DataHelper.VerificationCode(code));
     }
 
@@ -65,19 +77,19 @@ public class TemplateSteps {
     public void authValidUser(String login, String password) {
         openAuthPage("http://localhost:9999");
         loginWithNameAndPassword(login, password);
-        setValidCode(verificationCode.getCode());
+        setCode(verificationCode.getCode());
     }
 
     @И("пользователь переводит {string} рублей с карты с номером {string} на свою 1 карту с главной страницы")
     public void increaseBalanceFirstCard(String amount, String from) {
-        dashboardPage.refresh(cardOneId, cardTwoId, authInfo);
-        refillPage = dashboardPage.increaseBalance(cardOneId);
+        refresh();
+        refillPage = dashboardPage.increaseBalance(1);
         refillPage.refillCard(amount, from);
     }
 
-    @Тогда("баланс его 1 карты из списка на главной странице должен стать {int} рублей")
-    public void getBalance(int expectedBalance) {
-        int actualBalance = dashboardPage.getCardBalance(cardOneId);
+    @Тогда("баланс его {int} карты из списка на главной странице должен стать {int} рублей")
+    public void getBalance(int number, int expectedBalance) {
+        int actualBalance = dashboardPage.getCardBalance(number);
         assertEquals(expectedBalance, actualBalance);
     }
 
